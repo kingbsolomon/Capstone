@@ -1,2 +1,0 @@
-# Capstone
-devCodeCamp Capstone Project
