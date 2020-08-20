@@ -60,6 +60,38 @@ class _SignInState extends State<SignIn> {
     }
   }
 
+  signInGoogle() async{
+
+    if (formKey.currentState.validate()) {
+      setState(() {
+        isLoading = true;
+      });
+
+      var user = await authService.signInWithGoogle();
+
+      if(user != null){
+        QuerySnapshot userInfoSnapshot =
+        await DatabaseMethods().getUserInfo(user.email);
+
+        HelperFunctions.saveUserLoggedInSharedPreference(true);
+        HelperFunctions.saveUserNameSharedPreference(
+            userInfoSnapshot.documents[0].data["name"]);
+        HelperFunctions.saveUserEmailSharedPreference(
+            userInfoSnapshot.documents[0].data["email"]);
+
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => ChatRoom()));
+      } else {
+        setState(() {
+          isLoading = false;
+          //show snackbar
+        });
+      }
+
+      }
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -156,7 +188,7 @@ class _SignInState extends State<SignIn> {
             ),
             GestureDetector(
               onTap: (){
-                authService.signInWithGoogle(context);
+                signInGoogle();
               },
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 16),

@@ -7,6 +7,7 @@ import 'package:login_test/views/chatRoomsScreen.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   User _userFromFirebaseUser(FirebaseUser user) {
     return user != null ? User(uid: user.uid) : null;
@@ -45,13 +46,11 @@ class AuthService {
     }
   }
 
-  Future<FirebaseUser> signInWithGoogle(BuildContext context) async {
-    final GoogleSignIn _googleSignIn = new GoogleSignIn();
+  Future<FirebaseUser> signInWithGoogle() async {
 
-    final GoogleSignInAccount googleSignInAccount =
-    await _googleSignIn.signIn();
+    final GoogleSignInAccount user = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleSignInAuthentication =
-    await googleSignInAccount.authentication;
+    await user.authentication;
 
     final AuthCredential credential = GoogleAuthProvider.getCredential(
         idToken: googleSignInAuthentication.idToken,
@@ -60,9 +59,10 @@ class AuthService {
     AuthResult result = await _auth.signInWithCredential(credential);
     FirebaseUser userDetails = result.user;
 
-    if (userDetails == null) {
-    } else {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => ChatRoom()));
+    if (userDetails != null) {
+      return userDetails;
+    }else{
+      return null;
     }
   }
 

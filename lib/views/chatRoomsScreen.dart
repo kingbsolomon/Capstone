@@ -8,6 +8,7 @@ import 'package:login_test/views/search.dart';
 import 'package:login_test/views/signin.dart';
 import 'package:login_test/helper/constants.dart';
 import 'package:login_test/views/chat.dart';
+import 'package:login_test/services/sideMenu.dart';
 
 class ChatRoom extends StatefulWidget {
   @override
@@ -59,6 +60,7 @@ class _ChatRoomState extends State<ChatRoom> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: NavDrawer(),
       appBar: AppBar(
         title: Text("Choose Your Adventure"),
         centerTitle: false,

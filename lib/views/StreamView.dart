@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:foldable_sidebar/foldable_sidebar.dart';
+import 'package:login_test/helper/vote.dart';
+import 'package:login_test/services/sideMenu.dart';
 import 'package:polls/polls.dart';
+import 'package:provider/provider.dart';
 import 'package:slide_countdown_clock/slide_countdown_clock.dart';
-import 'package:login_test/helper/chat.dart';
+import 'package:login_test/services/services.dart';
+import 'package:login_test/widgets/poll_list.dart';
+import 'package:login_test/widgets/vote.dart';
+
 
 class StreamView extends StatefulWidget {
   @override
@@ -10,6 +16,9 @@ class StreamView extends StatefulWidget {
 }
 
 class _StreamViewState extends State<StreamView> {
+
+
+
   FSBStatus drawerStatus;
 
   @override
@@ -17,19 +26,24 @@ class _StreamViewState extends State<StreamView> {
     return SafeArea(
 
       child: Scaffold(
+        drawer: NavDrawer(),
+        appBar: AppBar(
+          title: const Text('Choose Your Adventure'),
+
+        ),
 
         body: FoldableSidebarBuilder(
-          drawerBackgroundColor: Colors.deepOrange,
+          drawerBackgroundColor: Colors.deepPurple,
           drawer: CustomDrawer(closeDrawer: (){
             setState(() {
               drawerStatus = FSBStatus.FSB_CLOSE;
             });
           },),
-          screenContents: FirstScreen(),
+          screenContents: MainScreen(),
           status: drawerStatus,
         ),
         floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.deepOrange,
+            backgroundColor: Colors.deepPurple,
             child: Icon(Icons.poll,color: Colors.white,),
             onPressed: () {
               setState(() {
@@ -41,14 +55,13 @@ class _StreamViewState extends State<StreamView> {
   }
 }
 
-class FirstScreen extends StatelessWidget {
+class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.black.withAlpha(200),
-      child: ChannelListPage(),
-      //child: Center(child: Image.asset('assets/back.jpg')),
+      child: Image.asset('assets/giphy.gif'),
     );
   }
 }
@@ -63,102 +76,148 @@ class CustomDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     //MediaQueryData mediaQuery = MediaQuery.of(context);
     return Drawer(
-      child: PollView(),
+      child: VoteHomeScreen(),
     );
   }
 }
 
-class PollView extends StatefulWidget {
+class VoteHomeScreen extends StatefulWidget {
   @override
-  _PollViewState createState() => _PollViewState();
+  _VoteHomeScreenState createState() => _VoteHomeScreenState();
 }
 
-class _PollViewState extends State<PollView> {
+class _VoteHomeScreenState extends State<VoteHomeScreen> {
+  int voteCount = 1000;
+  int _currentStep = 0;
 
-  double option1 = 2.0;
-  double option2 = 0.0;
-  double option3 = 2.0;
-  double option4 = 3.0;
-
-  String user = "king@mail.com";
-  Map usersWhoVoted = {
-    'sam@mail.com': 3,
-    'mike@mail.com': 4,
-    'john@mail.com': 1,
-    'kenny@mail.com': 1
-  };
-
-  String creator = "eddy@mail.com";
-
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  Duration _duration = Duration(seconds: 1000000);
+  @override
+  void initState() {
+    super.initState();
+    // loading votes
+    Future.microtask(() {
+      Provider.of<VoteState>(context, listen: false).clearState();
+      Provider.of<VoteState>(context, listen: false).loadVoteList(context);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        SlideCountdownClock(
-          duration: Duration(days: 1, minutes: 2),
-          slideDirection: SlideDirection.Up,
-          separator: ":",
-          textStyle: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-          shouldShowDays: true,
-          onDone: () {
-            _scaffoldKey.currentState
-                .showSnackBar(SnackBar(content: Text('Clock 1 finished')));
-          },
-        ),
+    return Container(
+      child: Center(
+        child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Consumer<VoteState>(builder: (builder, voteState, child) {
+              return Container(
+                child: Column(
+                  children: <Widget>[
+                    if (voteState.voteList == null)
+                      Container(
+                        color: Colors.lightBlue,
+                      ),
+                    if (voteState.voteList != null)
+                      Expanded(
+                        child: Stepper(
+                          type: StepperType.horizontal,
+                          currentStep: _currentStep,
+                          steps: [
+                            getStep(
+                              title: 'Choose',
+                              child: VoteListWidget(),
+                              isActive: true,
+                            ),
+                            getStep(
+                              title: 'Vote',
+                              child: VoteWidget(),
+                              isActive: _currentStep >= 1 ? true : false,
+                            ),
+                          ],
+                          onStepCancel: () {
+                            if (_currentStep <= 0) {
+                              voteState.activeVote = null;
+                            } else if (_currentStep <= 1) {
+                              voteState.selectedOptionInActiveVote = null;
+                            }
 
-        Polls(
-          children: [
-            // This cannot be less than 2, else will throw an exception
-            Polls.options(title: 'Cairo', value: option1),
-            Polls.options(title: 'Mecca', value: option2),
-            Polls.options(title: 'Denmark', value: option3),
-            Polls.options(title: 'Mogadishu', value: option4),
-          ],
-          question: Text('WHAT GAME PLAY NEXT'),
-          currentUser: this.user,
-          creatorID: this.creator,
-          voteData: usersWhoVoted,
-          userChoice: usersWhoVoted[this.user],
-          onVoteBackgroundColor: Colors.blue,
-          leadingBackgroundColor: Colors.blue,
-          backgroundColor: Colors.white,
-          onVote: (choice) {
-            print(choice);
-            setState(() {
-              this.usersWhoVoted[this.user] = choice;
-            });
-            if (choice == 1) {
-              setState(() {
-                option1 += 1.0;
-              });
-            }
-            if (choice == 2) {
-              setState(() {
-                option2 += 1.0;
-              });
-            }
-            if (choice == 3) {
-              setState(() {
-                option3 += 1.0;
-              });
-            }
-            if (choice == 4) {
-              setState(() {
-                option4 += 1.0;
-              });
-            }
-          },
-        ),
-      ],
+                            setState(() {
+                              _currentStep =
+                              (_currentStep - 1) < 0 ? 0 : _currentStep - 1;
+                            });
+                          },
+                          onStepContinue: () {
+                            if (_currentStep == 0) {
+                              if (step2Required(voteState)) {
+                                setState(() {
+                                  _currentStep = (_currentStep + 1) > 2
+                                      ? 2
+                                      : _currentStep + 1;
+                                });
+                              } else {
+                                showSnackBar(
+                                    context, 'Please select a vote first!');
+                              }
+                            } else if (_currentStep == 1) {
+                              if (step3Required(voteState)) {
+                                // submit vote
+                                markMyVote(voteState);
+
+                                // Go To Result Screen
+                                Navigator.pushReplacementNamed(
+                                    context, '/result');
+                              } else {
+                                showSnackBar(context, 'Please mark your vote!');
+                              }
+                            }
+                          },
+                        ),
+                      ),
+                  ],
+                ),
+              );
+            })),
+      ),
     );
   }
+
+  bool step2Required(VoteState voteState) {
+    if (voteState.activeVote == null) {
+      return false;
+    }
+
+    return true;
+  }
+
+  bool step3Required(VoteState voteState) {
+    if (voteState.selectedOptionInActiveVote == null) {
+      return false;
+    }
+    return true;
+  }
+
+  void showSnackBar(BuildContext context, String msg) {
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text(
+        msg,
+        style: TextStyle(fontSize: 22),
+      ),
+    ));
+  }
+
+  Step getStep({
+    String title,
+    Widget child,
+    bool isActive = false,
+  }) {
+    return Step(
+      title: Text(title),
+      content: child,
+      isActive: isActive,
+    );
+  }
+
+  void markMyVote(VoteState voteState) {
+    final voteId = voteState.activeVote.voteId;
+    final option = voteState.selectedOptionInActiveVote;
+
+    markVote(voteId, option);
+  }
 }
-
-
-

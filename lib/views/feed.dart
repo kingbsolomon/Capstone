@@ -48,7 +48,7 @@ class UserFeedState extends State<UserFeed> {
 
       drawer: NavDrawer(),
       appBar: AppBar(
-        title: const Text('Basic AppBar'),
+        title: const Text('Choose Your Adventure'),
 
       ),
 
