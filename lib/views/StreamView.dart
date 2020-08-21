@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:foldable_sidebar/foldable_sidebar.dart';
 import 'package:login_test/helper/vote.dart';
 import 'package:login_test/services/sideMenu.dart';
+import 'package:login_test/views/results.dart';
 import 'package:polls/polls.dart';
 import 'package:provider/provider.dart';
 import 'package:slide_countdown_clock/slide_countdown_clock.dart';
@@ -81,6 +82,7 @@ class CustomDrawer extends StatelessWidget {
   }
 }
 
+
 class VoteHomeScreen extends StatefulWidget {
   @override
   _VoteHomeScreenState createState() => _VoteHomeScreenState();
@@ -159,10 +161,9 @@ class _VoteHomeScreenState extends State<VoteHomeScreen> {
                               if (step3Required(voteState)) {
                                 // submit vote
                                 markMyVote(voteState);
-
                                 // Go To Result Screen
-                                Navigator.pushReplacementNamed(
-                                    context, '/result');
+                                Navigator.pushReplacement(context,
+                                    MaterialPageRoute(builder: (context) => ResultScreen()));
                               } else {
                                 showSnackBar(context, 'Please mark your vote!');
                               }

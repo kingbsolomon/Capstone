@@ -2,29 +2,54 @@ import 'package:flutter/material.dart';
 import 'package:login_test/helper/vote.dart';
 import 'package:login_test/services/services.dart';
 import 'package:login_test/model/vote.dart';
+import 'package:login_test/services/sideMenu.dart';
+import 'package:login_test/views/StreamView.dart';
 import 'package:provider/provider.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:login_test/model/vote.dart';
 
-class ResultScreen extends StatelessWidget {
+class ResultScreen extends StatefulWidget {
+  @override
+  _ResultScreenState createState() => _ResultScreenState();
+}
+
+
+
+
+class _ResultScreenState extends State<ResultScreen> {
+
+  @override
+  void initState(){
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     retrieveActiveVoteData(context);
 
-    return Container(
-      padding: EdgeInsets.all(20),
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height / 2,
-      child: createChart(context),
+    return Scaffold(
+      drawer: NavDrawer(),
+      appBar: AppBar(
+        title: Text("Choose Your Adventure"),
+        centerTitle: true,
+      ),
+      body: Container(
+        padding: EdgeInsets.all(20),
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height / 2,
+        child: createChart(context),
+      ),
     );
   }
 
   Widget createChart(BuildContext context) {
     return Consumer<VoteState>(
       builder: (context, voteState, child) {
-        return charts.BarChart(
-          retrieveVoteResult(context, voteState),
-          animate: true,
+        return Container(
+          child: charts.BarChart(
+            retrieveVoteResult(context, voteState),
+            animate: false,
+          ),
         );
       },
     );
