@@ -13,28 +13,6 @@ const String kVotes = 'votes';
 const String kTitle = 'title';
 
 void getVoteListFromFirestore(BuildContext context) async {
-//  Firestore.instance.collection(kVotes).snapshots().listen((data) {
-//    List<Vote> voteList = List<Vote>();
-//
-//    data.documents.forEach((DocumentSnapshot document) {
-//      Vote vote = Vote(voteId: document.documentID);
-//
-//      List<Map<String, int>> options = List();
-//
-//      document.data.forEach((key, value) {
-//        if (key == kTitle) {
-//          vote.voteTitle = value;
-//        } else {
-//          options.add({key: value});
-//        }
-//      });
-//
-//      vote.options = options;
-//      voteList.add(vote);
-//    });
-//
-//    Provider.of<VoteState>(context, listen: false).voteList = voteList;
-//  });
 
   Firestore.instance.collection(kVotes).getDocuments().then((snapshot) {
     List<Vote> voteList = List<Vote>();

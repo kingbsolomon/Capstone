@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:login_test/services/sideMenu.dart';
 import 'package:login_test/views/StreamView.dart';
+import 'package:login_test/views/StreamCreate.dart';
+import 'package:login_test/helper/video_player.dart';
 
 class UserFeed extends StatefulWidget {
   @override
@@ -12,18 +14,24 @@ class UserFeed extends StatefulWidget {
 //apparently new is not needed
 class UserFeedState extends State<UserFeed> {
 
-  Container myArticles(String imageVal, String heading, String subHeading, context){
-    return Container(
-      width: 160.0,
-      child: Card(
-        child: Wrap(
-          children: [
-            Image.network("$imageVal") ,
-            ListTile(
-              title: Text("$heading"),
-              subtitle: Text("$subHeading"),
-            ),
-          ],
+  GestureDetector myArticles(String imageVal, String heading, String subHeading, context){
+    return GestureDetector(
+      onTap: (){
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => StreamView()));
+      },
+      child: Container(
+        width: 160.0,
+        child: Card(
+          child: Wrap(
+            children: [
+              Image.network("$imageVal") ,
+              ListTile(
+                title: Text("$heading"),
+                subtitle: Text("$subHeading"),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -58,10 +66,10 @@ class UserFeedState extends State<UserFeed> {
           scrollDirection: Axis.vertical,
           children: [
             RaisedButton(
-                child: Text('Stream'),
+                child: Text('Create Stream'),
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => StreamView()));
+                      MaterialPageRoute(builder: (context) => StreamCreate()));
                 }),
 
             Expanded(

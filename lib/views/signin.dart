@@ -49,7 +49,7 @@ class _SignInState extends State<SignIn> {
               userInfoSnapshot.documents[0].data["email"]);
 
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => ChatRoom()));
+              context, MaterialPageRoute(builder: (context) => UserFeed()));
         } else {
           setState(() {
             isLoading = false;

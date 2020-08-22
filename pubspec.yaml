@@ -41,6 +41,8 @@ dependencies:
   uuid: ^2.0.4
   provider: ^4.1.2
   charts_flutter: ^0.9.0
+  video_player:
+  avatar_glow: ^1.1.0
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:login_test/helper/authenticate.dart';
 import 'package:login_test/views/chatRoomsScreen.dart';
 import 'package:login_test/views/feed.dart';
+import 'package:login_test/views/myProfile.dart';
+import 'package:login_test/views/signin.dart';
+import 'package:login_test/services/auth.dart';
 
 class NavDrawer extends StatelessWidget {
   @override
@@ -8,15 +12,14 @@ class NavDrawer extends StatelessWidget {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
-        children: <Widget>[
-          DrawerHeader(
-            child: Text(
-              'Sidebar',
-              style: TextStyle(color: Colors.white, fontSize: 25),
+        children:[
+          UserAccountsDrawerHeader(
+            accountEmail: Text('KennyG@gmail.com'), // keep blank text because email is required
+            currentAccountPicture: CircleAvatar(
+              backgroundImage: AssetImage('assets/giphy.gif'),
+              radius: 50,
             ),
-            decoration: BoxDecoration(
-                color: Colors.deepPurple,
-                ),
+            accountName: Text('Kenny G'),
           ),
           ListTile(
             leading: Icon(Icons.home),
@@ -29,7 +32,8 @@ class NavDrawer extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.verified_user),
             title: Text('Profile'),
-            onTap: () => {Navigator.of(context).pop()},
+            onTap: () => {Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => ProfilePage()))},
           ),
           ListTile(
             leading: Icon(Icons.message),
@@ -51,7 +55,11 @@ class NavDrawer extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.exit_to_app),
             title: Text('Logout'),
-            onTap: () => {Navigator.of(context).pop()},
+            onTap: () {
+              AuthService().signOut();
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => Authenticate()));
+              }
           ),
         ],
       ),

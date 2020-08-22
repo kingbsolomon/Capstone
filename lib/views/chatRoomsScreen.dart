@@ -64,18 +64,6 @@ class _ChatRoomState extends State<ChatRoom> {
       appBar: AppBar(
         title: Text("Choose Your Adventure"),
         centerTitle: false,
-        actions: [
-          GestureDetector(
-            onTap: () {
-              AuthService().signOut();
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => Authenticate()));
-            },
-            child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Icon(Icons.exit_to_app)),
-          )
-        ],
       ),
       body: Container(
         child: chatRoomsList(),

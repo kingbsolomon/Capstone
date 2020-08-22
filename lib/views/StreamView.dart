@@ -1,15 +1,19 @@
+
 import 'package:flutter/material.dart';
 import 'package:foldable_sidebar/foldable_sidebar.dart';
 import 'package:login_test/helper/vote.dart';
 import 'package:login_test/services/sideMenu.dart';
 import 'package:login_test/views/results.dart';
+import 'package:login_test/widgets/widget.dart';
 import 'package:polls/polls.dart';
 import 'package:provider/provider.dart';
 import 'package:slide_countdown_clock/slide_countdown_clock.dart';
 import 'package:login_test/services/services.dart';
 import 'package:login_test/widgets/poll_list.dart';
 import 'package:login_test/widgets/vote.dart';
-
+import 'package:login_test/helper/video_player.dart';
+import 'package:video_player/video_player.dart';
+import 'dart:async';
 
 class StreamView extends StatefulWidget {
   @override
@@ -17,38 +21,40 @@ class StreamView extends StatefulWidget {
 }
 
 class _StreamViewState extends State<StreamView> {
-
-
-
   FSBStatus drawerStatus;
+  int voteCount = 1000;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-
       child: Scaffold(
         drawer: NavDrawer(),
         appBar: AppBar(
           title: const Text('Choose Your Adventure'),
-
         ),
-
         body: FoldableSidebarBuilder(
           drawerBackgroundColor: Colors.deepPurple,
-          drawer: CustomDrawer(closeDrawer: (){
-            setState(() {
-              drawerStatus = FSBStatus.FSB_CLOSE;
-            });
-          },),
+          drawer: CustomDrawer(
+            closeDrawer: () {
+              setState(() {
+                drawerStatus = FSBStatus.FSB_CLOSE;
+              });
+            },
+          ),
           screenContents: MainScreen(),
           status: drawerStatus,
         ),
         floatingActionButton: FloatingActionButton(
             backgroundColor: Colors.deepPurple,
-            child: Icon(Icons.poll,color: Colors.white,),
+            child: Icon(
+              Icons.poll,
+              color: Colors.white,
+            ),
             onPressed: () {
               setState(() {
-                drawerStatus = drawerStatus == FSBStatus.FSB_OPEN ? FSBStatus.FSB_CLOSE : FSBStatus.FSB_OPEN;
+                drawerStatus = drawerStatus == FSBStatus.FSB_OPEN
+                    ? FSBStatus.FSB_CLOSE
+                    : FSBStatus.FSB_OPEN;
               });
             }),
       ),
@@ -56,22 +62,93 @@ class _StreamViewState extends State<StreamView> {
   }
 }
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
+  MainScreen({Key key}) : super(key: key);
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  VideoPlayerController _controller;
+  Future<void> _initializeVideoPlayerFuture;
+
+
+  @override
+  void initState() {
+    _controller = VideoPlayerController.network(
+      'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+    );
+
+    // Initialize the controller and store the Future for later use.
+    _initializeVideoPlayerFuture = _controller.initialize();
+
+    // Use the controller to loop the video.
+    _controller.setLooping(true);
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // Ensure disposing of the VideoPlayerController to free up resources.
+    _controller.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black.withAlpha(200),
-      child: Image.asset('assets/giphy.gif'),
+    return Column(
+      children: [
+        FutureBuilder(
+          future: _initializeVideoPlayerFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              // If the VideoPlayerController has finished initialization, use
+              // the data it provides to limit the aspect ratio of the video.
+              return AspectRatio(
+                aspectRatio: _controller.value.aspectRatio,
+                // Use the VideoPlayer widget to display the video.
+                child: VideoPlayer(_controller),
+              );
+            } else {
+              // If the VideoPlayerController is still initializing, show a
+              // loading spinner.
+              return Center(child: CircularProgressIndicator());
+            }
+          },
+        ),
+        FlatButton(
+          padding: EdgeInsets.symmetric(vertical: 20.0),
+          color: Colors.deepPurple,
+          onPressed: () {
+            setState(() {
+              // If the video is playing, pause it.
+              if (_controller.value.isPlaying) {
+                _controller.pause();
+              } else {
+                // If the video is paused, play it.
+                _controller.play();
+              }
+            });
+          },
+          // Display the correct icon depending on the state of the player.
+          child: Icon(
+            _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+            size: 40.0,
+          ),
+        ),
+
+      ],
     );
   }
 }
 
 
 class CustomDrawer extends StatelessWidget {
-
   final Function closeDrawer;
   const CustomDrawer({Key key, this.closeDrawer}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +158,6 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 }
-
 
 class VoteHomeScreen extends StatefulWidget {
   @override
@@ -112,6 +188,13 @@ class _VoteHomeScreenState extends State<VoteHomeScreen> {
               return Container(
                 child: Column(
                   children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: Text(
+                        "Current Vote Count:  $voteCount",
+                        style: voteCountTextStyle(),
+                      ),
+                    ),
                     if (voteState.voteList == null)
                       Container(
                         color: Colors.lightBlue,
@@ -142,7 +225,7 @@ class _VoteHomeScreenState extends State<VoteHomeScreen> {
 
                             setState(() {
                               _currentStep =
-                              (_currentStep - 1) < 0 ? 0 : _currentStep - 1;
+                                  (_currentStep - 1) < 0 ? 0 : _currentStep - 1;
                             });
                           },
                           onStepContinue: () {
@@ -162,8 +245,10 @@ class _VoteHomeScreenState extends State<VoteHomeScreen> {
                                 // submit vote
                                 markMyVote(voteState);
                                 // Go To Result Screen
-                                Navigator.pushReplacement(context,
-                                    MaterialPageRoute(builder: (context) => ResultScreen()));
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ResultScreen()));
                               } else {
                                 showSnackBar(context, 'Please mark your vote!');
                               }
@@ -218,6 +303,7 @@ class _VoteHomeScreenState extends State<VoteHomeScreen> {
   void markMyVote(VoteState voteState) {
     final voteId = voteState.activeVote.voteId;
     final option = voteState.selectedOptionInActiveVote;
+    voteCount--;
 
     markVote(voteId, option);
   }

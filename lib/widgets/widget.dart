@@ -24,6 +24,11 @@ TextStyle biggerTextStyle() {
   return TextStyle(color: Colors.white, fontSize: 17);
 }
 
+TextStyle voteCountTextStyle() {
+  return TextStyle(color: Colors.black, fontSize: 18);
+}
+
+
 bool validEmail(String value){
   bool emailValid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value);
   return emailValid;
