@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 
 Widget appBarMain(BuildContext context){
   return AppBar(
-    title: Text('Choose My Adventure'),
+    title:
+      Image.asset("assets/text.gif",
+        height: 40,
+      ),
+    elevation: 0.0,
+    centerTitle: false,
   );
 }
 

@@ -88,6 +88,9 @@ class VoteHomeScreen extends StatefulWidget {
 class _VoteHomeScreenState extends State<VoteHomeScreen> {
   int _currentStep = 0;
   static MyFormData data = MyFormData();
+  FSBStatus drawerStatus = FSBStatus.FSB_OPEN;
+
+  String test1;
 
   @override
   void initState() {
@@ -112,14 +115,8 @@ class _VoteHomeScreenState extends State<VoteHomeScreen> {
                             state: StepState.indexed,
                             content: TextFormField(
                               keyboardType: TextInputType.text,
-                              onSaved: (String value) {
+                              onChanged: (String value) {
                                 data.title = value;
-                              },
-                              validator: (value) {
-                                if (value.isEmpty || value.length < 1) {
-                                  return 'Please enter title';
-                                }
-                                return null;
                               },
                               decoration: InputDecoration(
                                 labelText: 'Enter Poll Title',
@@ -130,19 +127,12 @@ class _VoteHomeScreenState extends State<VoteHomeScreen> {
                           ),
                           Step(
                             title: Text('Poll Answers'),
-                            isActive: _currentStep >= 1 ? true : false,
+                            isActive: _currentStep == 1 ? true : false,
                             state: StepState.indexed,
                             content: TextFormField(
                                     keyboardType: TextInputType.text,
-                                    onSaved: (String value) {
-                                      data.title = value;
-                                    },
-                                    validator: (value1) {
-                                      if (value1.isEmpty ||
-                                          value1.length < 1) {
-                                        return 'Please enter valid choice';
-                                      }
-                                      return null;
+                                    onChanged: (String value) {
+                                      data.choice1 = value;
                                     },
                                     decoration: InputDecoration(
                                       labelText: 'Choice',
@@ -153,19 +143,12 @@ class _VoteHomeScreenState extends State<VoteHomeScreen> {
                           ),
                           Step(
                             title: Text('Poll Answers'),
-                            isActive: _currentStep >= 2 ? true : false,
+                            isActive: _currentStep == 2 ? true : false,
                             state: StepState.indexed,
                             content: TextFormField(
                               keyboardType: TextInputType.text,
-                              onSaved: (String value) {
-                                data.title = value;
-                              },
-                              validator: (value1) {
-                                if (value1.isEmpty ||
-                                    value1.length < 1) {
-                                  return 'Please enter valid choice';
-                                }
-                                return null;
+                              onChanged: (String value) {
+                                data.choice2 = value;
                               },
                               decoration: InputDecoration(
                                 labelText: 'Choice',
@@ -176,19 +159,28 @@ class _VoteHomeScreenState extends State<VoteHomeScreen> {
                           ),
                           Step(
                             title: Text('Poll Answers'),
-                            isActive: _currentStep >= 3 ? true : false,
+                            isActive: _currentStep == 3 ? true : false,
                             state: StepState.indexed,
                             content: TextFormField(
                               keyboardType: TextInputType.text,
-                              onSaved: (String value) {
-                                data.title = value;
+                              onChanged: (String value) {
+                                data.choice3 = value;
                               },
-                              validator: (value1) {
-                                if (value1.isEmpty ||
-                                    value1.length < 1) {
-                                  return 'Please enter valid choice';
-                                }
-                                return null;
+                              decoration: InputDecoration(
+                                labelText: 'Choice',
+                                hintText: '',
+                                icon: Icon(Icons.question_answer),
+                              ),
+                            ),
+                          ),
+                          Step(
+                            title: Text('Poll Answers'),
+                            isActive: _currentStep == 4 ? true : false,
+                            state: StepState.indexed,
+                            content: TextFormField(
+                              keyboardType: TextInputType.text,
+                              onChanged: (String value) {
+                                data.choice4 = value;
                               },
                               decoration: InputDecoration(
                                 labelText: 'Choice',
@@ -211,11 +203,18 @@ class _VoteHomeScreenState extends State<VoteHomeScreen> {
                         },
                         onStepContinue: () {
                           setState(() {
+                            if(_currentStep == 4 ){
+                              createNewPollFirestore(data.title, data.choice1, data.choice2,
+                                  data.choice3, data.choice4);
+                              showSnackBar(context, 'Poll Created');
+
+                            }
                             if (_currentStep < 4) {
                               _currentStep = _currentStep + 1;
                             } else {
-                              _currentStep = 0;
+                              _currentStep = _currentStep;
                             }
+
 
                           });
 
@@ -235,4 +234,13 @@ class MyFormData {
   String choice2;
   String choice3;
   String choice4;
+}
+
+void showSnackBar(BuildContext context, String msg) {
+  Scaffold.of(context).showSnackBar(SnackBar(
+    content: Text(
+      msg,
+      style: TextStyle(fontSize: 22),
+    ),
+  ));
 }

@@ -3,6 +3,7 @@ import 'package:login_test/services/sideMenu.dart';
 import 'package:login_test/views/StreamView.dart';
 import 'package:login_test/views/StreamCreate.dart';
 import 'package:login_test/helper/video_player.dart';
+import 'package:login_test/widgets/widget.dart';
 
 class UserFeed extends StatefulWidget {
   @override
@@ -55,10 +56,7 @@ class UserFeedState extends State<UserFeed> {
     return Scaffold(
 
       drawer: NavDrawer(),
-      appBar: AppBar(
-        title: const Text('Choose Your Adventure'),
-
-      ),
+      appBar: appBarMain(context),
 
       body:
       Container(
@@ -79,7 +77,7 @@ class UserFeedState extends State<UserFeed> {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    myArticles(url, h1, descrip,context),
+                    myArticles("https://i.insider.com/5a82fa30d03072c10e8b4588", "Dr. Disrespect", "commonly known by his online alias Dr Disrespect, is an American Internet celebrity, current YouTube streamer, and former Twitch streamer",context),
                     myArticles(url, h1, descrip,context),
                     myArticles(url, h1, descrip,context),
                     myArticles(url, h1, descrip,context),

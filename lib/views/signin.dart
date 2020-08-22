@@ -119,7 +119,7 @@ class _SignInState extends State<SignIn> {
                     },
                     controller: emailEditingController,
                     style: simpleTextStyle(),
-                    decoration: textFieldInputDecoration("email"),
+                    decoration: textFieldInputDecoration("Email"),
                   ),
                   TextFormField(
                     obscureText: true,
@@ -130,7 +130,7 @@ class _SignInState extends State<SignIn> {
                     },
                     style: simpleTextStyle(),
                     controller: passwordEditingController,
-                    decoration: textFieldInputDecoration("password"),
+                    decoration: textFieldInputDecoration("Password"),
                   ),
                 ],
               ),
@@ -171,8 +171,8 @@ class _SignInState extends State<SignIn> {
                     borderRadius: BorderRadius.circular(30),
                     gradient: LinearGradient(
                       colors: [
-                        const Color(0xff007EF4),
-                        const Color(0xff2A75BC)
+                        Colors.deepPurple,
+                        Colors.deepPurpleAccent,
                       ],
                     )),
                 width: MediaQuery.of(context).size.width,

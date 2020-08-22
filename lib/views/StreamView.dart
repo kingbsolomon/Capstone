@@ -238,7 +238,7 @@ class _VoteHomeScreenState extends State<VoteHomeScreen> {
                                 });
                               } else {
                                 showSnackBar(
-                                    context, 'Please select a vote first!');
+                                    context, 'Please select a poll!');
                               }
                             } else if (_currentStep == 1) {
                               if (step3Required(voteState)) {
