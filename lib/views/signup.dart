@@ -163,7 +163,8 @@ class _SignUpState extends State<SignUp> {
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 8),
                       child: Text("Sign In", style: TextStyle(color:Colors.white, decoration: TextDecoration.underline,)
-                      ),),
+                      ),
+                   ),
                 ),
               ],
             ),

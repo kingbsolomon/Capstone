@@ -42,7 +42,10 @@ dependencies:
   provider: ^4.1.2
   charts_flutter: ^0.9.0
   video_player:
-  avatar_glow: ^1.1.0
+  flutter_sparkline: "^0.1.0"
+  flutter_staggered_grid_view: "^0.3.0"
+  flutter_circular_chart: ^0.1.0
+  font_awesome_flutter: ^8.2.0
 
 dev_dependencies:
   flutter_test:

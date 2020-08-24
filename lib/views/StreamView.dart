@@ -29,9 +29,7 @@ class _StreamViewState extends State<StreamView> {
     return SafeArea(
       child: Scaffold(
         drawer: NavDrawer(),
-        appBar: AppBar(
-          title: const Text('Choose Your Adventure'),
-        ),
+        appBar: appBarMain(context),
         body: FoldableSidebarBuilder(
           drawerBackgroundColor: Colors.deepPurple,
           drawer: CustomDrawer(

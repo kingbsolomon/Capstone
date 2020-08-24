@@ -9,6 +9,7 @@ import 'package:login_test/views/signin.dart';
 import 'package:login_test/helper/constants.dart';
 import 'package:login_test/views/chat.dart';
 import 'package:login_test/services/sideMenu.dart';
+import 'package:login_test/widgets/widget.dart';
 
 class ChatRoom extends StatefulWidget {
   @override
@@ -61,10 +62,7 @@ class _ChatRoomState extends State<ChatRoom> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: NavDrawer(),
-      appBar: AppBar(
-        title: Text("Choose Your Adventure"),
-        centerTitle: false,
-      ),
+      appBar: appBarMain(context),
       body: Container(
         child: chatRoomsList(),
       ),
@@ -101,18 +99,11 @@ class ChatRoomsTile extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              height: 30,
-              width: 30,
-              decoration: BoxDecoration(
-                  color: CustomTheme.colorAccent,
-                  borderRadius: BorderRadius.circular(30)),
-              child: Text(userName.substring(0, 1),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontFamily: 'OverpassRegular',
-                      fontWeight: FontWeight.w300)),
+              height: 40,
+              width: 40,
+              child: CircleAvatar(
+                backgroundImage: AssetImage('assets/ev.jpg'),
+              ),
             ),
             SizedBox(
               width: 12,

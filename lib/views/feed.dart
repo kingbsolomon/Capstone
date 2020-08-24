@@ -42,8 +42,8 @@ class UserFeedState extends State<UserFeed> {
   String url2 ="https://images.unsplash.com/photo-1484581400079-58a319a15a2a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjIxMTIzfQ&auto=format&fit=crop&w=500&q=60";
   String url3 ="https://images.unsplash.com/photo-1515875294982-4796669a7932?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60";
   String url4 ="https://images.unsplash.com/photo-1528155124528-06c125d81e89?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60";
-  String h1 = "This is heading one";
-  String descrip = "Putting more text here becasue this is going to be a brief description";
+  String h1 = "Video Game Streamer";
+  String descrip = "Twitch TV";
 
   @override
   void initState() {
@@ -77,11 +77,12 @@ class UserFeedState extends State<UserFeed> {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    myArticles("https://i.insider.com/5a82fa30d03072c10e8b4588", "Dr. Disrespect", "commonly known by his online alias Dr Disrespect, is an American Internet celebrity, current YouTube streamer, and former Twitch streamer",context),
-                    myArticles(url, h1, descrip,context),
-                    myArticles(url, h1, descrip,context),
-                    myArticles(url, h1, descrip,context),
-                    myArticles(url, h1, descrip,context),
+                    myArticles("https://prosettings.net/wp-content/uploads/2018/09/drdisrespect-profile-picture.jpg",
+                        "Dr. Disrespect", "Twitch TV",context),
+                    myArticles("https://prosettings.net/wp-content/uploads/2018/11/ninja-profile-picture-6.png", "Ninja", "Youtube",context),
+                    myArticles("https://prosettings.net/wp-content/uploads/2018/10/tfue-profile-picture-2.png", 'Tfue', 'Twitch TV',context),
+                    myArticles("https://prosettings.net/wp-content/uploads/2018/09/lothar-profile-picture.jpg", 'Lothar', 'Youtube',context),
+                    myArticles('https://prosettings.net/wp-content/uploads/2018/07/chocotaco-profile-picture.jpg', 'Choco Taco', 'Twitch TV',context),
                   ],
                 ),
               ),
@@ -93,9 +94,9 @@ class UserFeedState extends State<UserFeed> {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    myArticles(url2, h1, descrip,context),
-                    myArticles(url2, h1, descrip,context),
-                    myArticles(url2, h1, descrip,context),
+                    myArticles("https://prosettings.net/wp-content/uploads/2019/09/mrfreshasian-profile-picture-2.png", 'Ares', descrip,context),
+                    myArticles('https://prosettings.net/wp-content/uploads/2018/08/00flour-profile-picture-2.jpg', "Poseidon", descrip,context),
+                    myArticles('https://prosettings.net/wp-content/uploads/2019/04/ares-profile-picture-2.png', h1, descrip,context),
                     myArticles(url2, h1, descrip,context),
                     myArticles(url2, h1, descrip,context),
                   ],
@@ -110,10 +111,10 @@ class UserFeedState extends State<UserFeed> {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    myArticles(url3, h1, descrip,context),
-                    myArticles(url3, h1, descrip,context),
-                    myArticles(url3, h1, descrip,context),
-                    myArticles(url3, h1, descrip,context),
+                    myArticles("https://prosettings.net/wp-content/uploads/2019/05/martoz-profile-picture-2.png", "TwoKillz", descrip,context),
+                    myArticles('https://prosettings.net/wp-content/uploads/2018/09/slaappie-profile-picture.jpg', "Suckaaa", descrip,context),
+                    myArticles('https://prosettings.net/wp-content/uploads/2019/06/ex-profile-picture.png', h1, descrip,context),
+                    myArticles('https://prosettings.net/wp-content/uploads/2019/05/sway-profile-picture.png', h1, descrip,context),
                     myArticles(url3, h1, descrip,context),
                   ],
                 ),
@@ -126,9 +127,9 @@ class UserFeedState extends State<UserFeed> {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    myArticles(url4, h1, descrip,context),
-                    myArticles(url4, h1, descrip,context),
-                    myArticles(url4, h1, descrip,context),
+                    myArticles("https://prosettings.net/wp-content/uploads/2018/12/motor-profile-picture.jpg", "dizko", descrip,context),
+                    myArticles('https://prosettings.net/wp-content/uploads/2019/06/razorx-profile-picture.png', h1, descrip,context),
+                    myArticles("https://prosettings.net/wp-content/uploads/2019/12/dizko-profile-picture-2.png", h1, descrip,context),
                     myArticles(url4, h1, descrip,context),
                     myArticles(url4, h1, descrip,context),
                   ],

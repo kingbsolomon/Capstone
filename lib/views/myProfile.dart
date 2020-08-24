@@ -1,6 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:login_test/helper/constants.dart';
+import 'package:login_test/helper/helperFunctions.dart';
+import 'package:login_test/services/database.dart';
 import 'package:login_test/services/sideMenu.dart';
+import 'package:login_test/widgets/widget.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -9,54 +14,101 @@ class ProfilePage extends StatefulWidget {
 
 class MapScreenState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
+
   bool _status = true;
   final FocusNode myFocusNode = FocusNode();
+  QuerySnapshot searchResultSnapshot;
+  DatabaseMethods databaseMethods = DatabaseMethods();
+  TextEditingController userName = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController address = TextEditingController();
+  TextEditingController state = TextEditingController();
+  TextEditingController zipCode = TextEditingController();
+  String userNameText;
+  String emailText;
+  String addressText;
+  String zipText;
+  String stateText;
+  String documentID;
+
+  initiateSearch() async {
+    Constants.myEmail = await HelperFunctions.getUserEmailSharedPreference();
+      await databaseMethods.getUserInfo(Constants.myEmail)
+          .then((snapshot){
+        searchResultSnapshot = snapshot;
+        print("$searchResultSnapshot");
+        });
+
+    userNameText = searchResultSnapshot.documents[0].data["name"];
+    emailText = searchResultSnapshot.documents[0].data["email"];
+    addressText = searchResultSnapshot.documents[0].data["address"];
+    zipText = searchResultSnapshot.documents[0].data["zipCode"];
+    stateText = searchResultSnapshot.documents[0].data["state"];
+    documentID = searchResultSnapshot.documents[0].documentID;
+
+    userName = TextEditingController(text:'$userNameText');
+    email = TextEditingController(text:emailText);
+    address = TextEditingController(text:addressText);
+    zipCode = TextEditingController(text:zipText);
+    state = TextEditingController(text:stateText);
+
+    }
+
+    updateRecord() async{
+     await Firestore.instance.collection('users').document(documentID).updateData({
+        'name': userName.text,
+        'email': email.text,
+        'address': address.text,
+        'zipCode': zipCode.text,
+        'state': state.text,
+      });
+    }
+
+
+
 
   @override
   void initState() {
-    // TODO: implement initState
+    initiateSearch();
     super.initState();
   }
 
   @override
+
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return  Scaffold(
         drawer: NavDrawer(),
-        appBar: AppBar(
-          title: const Text('Choose Your Adventure'),
-
-        ),
-
-        body: new Container(
+        appBar: appBarMain(context),
+        body:  Container(
           color: Colors.white,
-          child: new ListView(
+          child:  ListView(
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  new Container(
+                   Container(
                     height: 250.0,
                     color: Colors.white,
-                    child: new Column(
+                    child:  Column(
                       children: <Widget>[
                         Padding(
                             padding: EdgeInsets.only(left: 20.0, top: 20.0),
-                            child: new Row(
+                            child:  Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                             )),
                         Padding(
                           padding: EdgeInsets.only(top: 20.0),
-                          child: new Stack(fit: StackFit.loose, children: <Widget>[
-                            new Row(
+                          child:  Stack(fit: StackFit.loose, children: <Widget>[
+                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                new Container(
+                                 Container(
                                     width: 140.0,
                                     height: 140.0,
-                                    decoration: new BoxDecoration(
+                                    decoration:  BoxDecoration(
                                       shape: BoxShape.circle,
-                                      image: new DecorationImage(
-                                        image: new ExactAssetImage(
+                                      image:  DecorationImage(
+                                        image:  ExactAssetImage(
                                             'assets/giphy.gif'),
                                         fit: BoxFit.cover,
                                       ),
@@ -65,13 +117,13 @@ class MapScreenState extends State<ProfilePage>
                             ),
                             Padding(
                                 padding: EdgeInsets.only(top: 90.0, right: 100.0),
-                                child: new Row(
+                                child:  Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    new CircleAvatar(
+                                     CircleAvatar(
                                       backgroundColor: Colors.red,
                                       radius: 25.0,
-                                      child: new Icon(
+                                      child:  Icon(
                                         Icons.camera_alt,
                                         color: Colors.white,
                                       ),
@@ -83,26 +135,26 @@ class MapScreenState extends State<ProfilePage>
                       ],
                     ),
                   ),
-                  new Container(
+                   Container(
                     color: Color(0xffFFFFFF),
                     child: Padding(
                       padding: EdgeInsets.only(bottom: 25.0),
-                      child: new Column(
+                      child:  Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Padding(
                               padding: EdgeInsets.only(
                                   left: 25.0, right: 25.0, top: 25.0),
-                              child: new Row(
+                              child:  Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 mainAxisSize: MainAxisSize.max,
                                 children: <Widget>[
-                                  new Column(
+                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
-                                      new Text(
+                                       Text(
                                         'Personal Information',
                                         style: TextStyle(
                                             fontSize: 18.0,
@@ -110,11 +162,11 @@ class MapScreenState extends State<ProfilePage>
                                       ),
                                     ],
                                   ),
-                                  new Column(
+                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
-                                      _status ? _getEditIcon() : new Container(),
+                                      _status ? _getEditIcon() :  Container(),
                                     ],
                                   )
                                 ],
@@ -122,14 +174,14 @@ class MapScreenState extends State<ProfilePage>
                           Padding(
                               padding: EdgeInsets.only(
                                   left: 25.0, right: 25.0, top: 25.0),
-                              child: new Row(
+                              child:  Row(
                                 mainAxisSize: MainAxisSize.max,
                                 children: <Widget>[
-                                  new Column(
+                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
-                                      new Text(
+                                       Text(
                                         'Name',
                                         style: TextStyle(
                                             fontSize: 16.0,
@@ -142,17 +194,16 @@ class MapScreenState extends State<ProfilePage>
                           Padding(
                               padding: EdgeInsets.only(
                                   left: 25.0, right: 25.0, top: 2.0),
-                              child: new Row(
+                              child: Row(
                                 mainAxisSize: MainAxisSize.max,
                                 children: <Widget>[
-                                  new Flexible(
-                                    child: new TextField(
+                                  Flexible(
+                                    child: TextFormField(
                                       decoration: const InputDecoration(
-                                        hintText: "Enter Your Name",
-                                      ),
+                                          hintText: "Enter User Name"),
                                       enabled: !_status,
                                       autofocus: !_status,
-
+                                      controller: userName,
                                     ),
                                   ),
                                 ],
@@ -160,14 +211,14 @@ class MapScreenState extends State<ProfilePage>
                           Padding(
                               padding: EdgeInsets.only(
                                   left: 25.0, right: 25.0, top: 25.0),
-                              child: new Row(
+                              child:  Row(
                                 mainAxisSize: MainAxisSize.max,
                                 children: <Widget>[
-                                  new Column(
+                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
-                                      new Text(
+                                       Text(
                                         'Email',
                                         style: TextStyle(
                                             fontSize: 16.0,
@@ -180,14 +231,16 @@ class MapScreenState extends State<ProfilePage>
                           Padding(
                               padding: EdgeInsets.only(
                                   left: 25.0, right: 25.0, top: 2.0),
-                              child: new Row(
+                              child:  Row(
                                 mainAxisSize: MainAxisSize.max,
                                 children: <Widget>[
-                                  new Flexible(
-                                    child: new TextField(
+                                   Flexible(
+                                    child:  TextFormField(
                                       decoration: const InputDecoration(
                                           hintText: "Enter Email"),
                                       enabled: !_status,
+                                      //initialValue: searchResultSnapshot.documents[0].data["email"] ?? " ",
+                                      controller: email,
                                     ),
                                   ),
                                 ],
@@ -195,14 +248,14 @@ class MapScreenState extends State<ProfilePage>
                           Padding(
                               padding: EdgeInsets.only(
                                   left: 25.0, right: 25.0, top: 25.0),
-                              child: new Row(
+                              child:  Row(
                                 mainAxisSize: MainAxisSize.max,
                                 children: <Widget>[
-                                  new Column(
+                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
-                                      new Text(
+                                       Text(
                                         'Address',
                                         style: TextStyle(
                                             fontSize: 16.0,
@@ -215,14 +268,16 @@ class MapScreenState extends State<ProfilePage>
                           Padding(
                               padding: EdgeInsets.only(
                                   left: 25.0, right: 25.0, top: 2.0),
-                              child: new Row(
+                              child:  Row(
                                 mainAxisSize: MainAxisSize.max,
                                 children: <Widget>[
-                                  new Flexible(
-                                    child: new TextField(
+                                   Flexible(
+                                    child:  TextFormField(
                                       decoration: const InputDecoration(
                                           hintText: "Enter Address"),
                                       enabled: !_status,
+                                      //initialValue: searchResultSnapshot.documents[0].data["address"] ?? " ",
+                                      controller: address,
                                     ),
                                   ),
                                 ],
@@ -230,13 +285,13 @@ class MapScreenState extends State<ProfilePage>
                           Padding(
                               padding: EdgeInsets.only(
                                   left: 25.0, right: 25.0, top: 25.0),
-                              child: new Row(
+                              child:  Row(
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
                                   Expanded(
                                     child: Container(
-                                      child: new Text(
+                                      child:  Text(
                                         'State',
                                         style: TextStyle(
                                             fontSize: 16.0,
@@ -247,7 +302,7 @@ class MapScreenState extends State<ProfilePage>
                                   ),
                                   Expanded(
                                     child: Container(
-                                      child: new Text(
+                                      child:  Text(
                                         'Zip Code',
                                         style: TextStyle(
                                             fontSize: 16.0,
@@ -261,32 +316,36 @@ class MapScreenState extends State<ProfilePage>
                           Padding(
                               padding: EdgeInsets.only(
                                   left: 25.0, right: 25.0, top: 2.0),
-                              child: new Row(
+                              child:  Row(
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
                                   Flexible(
                                     child: Padding(
                                       padding: EdgeInsets.only(right: 10.0),
-                                      child: new TextField(
+                                      child:  TextFormField(
                                         decoration: const InputDecoration(
                                             hintText: "Enter State"),
                                         enabled: !_status,
+                                        //initialValue: searchResultSnapshot.documents[0].data["state"] ?? " ",
+                                        controller: state,
                                       ),
                                     ),
                                     flex: 2,
                                   ),
                                   Flexible(
-                                    child: new TextField(
+                                    child:  TextFormField(
                                       decoration: const InputDecoration(
-                                          hintText: "Enter ZipCode"),
+                                          hintText: "Enter Zip Code"),
                                       enabled: !_status,
+                                      //initialValue: searchResultSnapshot.documents[0].data["zipCode"] ?? " " ,
+                                      controller: zipCode,
                                     ),
                                     flex: 2,
                                   ),
                                 ],
                               )),
-                          !_status ? _getActionButtons() : new Container(),
+                          !_status ? _getActionButtons() :  Container(),
                         ],
                       ),
                     ),
@@ -308,7 +367,7 @@ class MapScreenState extends State<ProfilePage>
   Widget _getActionButtons() {
     return Padding(
       padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 45.0),
-      child: new Row(
+      child:  Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
@@ -316,18 +375,19 @@ class MapScreenState extends State<ProfilePage>
             child: Padding(
               padding: EdgeInsets.only(right: 10.0),
               child: Container(
-                  child: new RaisedButton(
-                    child: new Text("Save"),
+                  child:  RaisedButton(
+                    child:  Text("Save"),
                     textColor: Colors.white,
                     color: Colors.green,
                     onPressed: () {
                       setState(() {
                         _status = true;
-                        FocusScope.of(context).requestFocus(new FocusNode());
+                        updateRecord();
+                        FocusScope.of(context).requestFocus( FocusNode());
                       });
                     },
-                    shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(20.0)),
+                    shape:  RoundedRectangleBorder(
+                        borderRadius:  BorderRadius.circular(20.0)),
                   )),
             ),
             flex: 2,
@@ -336,18 +396,18 @@ class MapScreenState extends State<ProfilePage>
             child: Padding(
               padding: EdgeInsets.only(left: 10.0),
               child: Container(
-                  child: new RaisedButton(
-                    child: new Text("Cancel"),
+                  child:  RaisedButton(
+                    child:  Text("Cancel"),
                     textColor: Colors.white,
                     color: Colors.red,
                     onPressed: () {
                       setState(() {
                         _status = true;
-                        FocusScope.of(context).requestFocus(new FocusNode());
+                        FocusScope.of(context).requestFocus( FocusNode());
                       });
                     },
-                    shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(20.0)),
+                    shape:  RoundedRectangleBorder(
+                        borderRadius:  BorderRadius.circular(20.0)),
                   )),
             ),
             flex: 2,
@@ -358,11 +418,11 @@ class MapScreenState extends State<ProfilePage>
   }
 
   Widget _getEditIcon() {
-    return new GestureDetector(
-      child: new CircleAvatar(
+    return  GestureDetector(
+      child:  CircleAvatar(
         backgroundColor: Colors.red,
         radius: 14.0,
-        child: new Icon(
+        child:  Icon(
           Icons.edit,
           color: Colors.white,
           size: 16.0,

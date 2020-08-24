@@ -4,6 +4,7 @@ import 'package:login_test/services/services.dart';
 import 'package:login_test/model/vote.dart';
 import 'package:login_test/services/sideMenu.dart';
 import 'package:login_test/views/StreamView.dart';
+import 'package:login_test/widgets/widget.dart';
 import 'package:provider/provider.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:login_test/model/vote.dart';
@@ -29,10 +30,7 @@ class _ResultScreenState extends State<ResultScreen> {
 
     return Scaffold(
       drawer: NavDrawer(),
-      appBar: AppBar(
-        title: Text("Choose Your Adventure"),
-        centerTitle: true,
-      ),
+      appBar: appBarMain(context),
       body: Container(
         padding: EdgeInsets.all(20),
         width: MediaQuery.of(context).size.width,

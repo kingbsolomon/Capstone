@@ -24,9 +24,7 @@ class _StreamCreateState extends State<StreamCreate> {
     return SafeArea(
       child: Scaffold(
         drawer: NavDrawer(),
-        appBar: AppBar(
-          title: const Text('Choose Your Adventure'),
-        ),
+        appBar: appBarMain(context),
         body: FoldableSidebarBuilder(
           drawerBackgroundColor: Colors.deepPurple,
           drawer: CustomDrawer(
@@ -244,3 +242,4 @@ void showSnackBar(BuildContext context, String msg) {
     ),
   ));
 }
+

@@ -2,6 +2,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DatabaseMethods {
+
+
   Future<void> addUserInfo(userData) async {
     Firestore.instance.collection("users").add(userData).catchError((e) {
       print(e.toString());
@@ -9,7 +11,7 @@ class DatabaseMethods {
   }
 
   getUserInfo(String email) async {
-    return Firestore.instance
+    return await Firestore.instance
         .collection("users")
         .where("email", isEqualTo: email)
         .getDocuments()
@@ -18,10 +20,12 @@ class DatabaseMethods {
     });
   }
 
-  searchByName(String searchField) {
+
+
+  searchByName(String name) {
     return Firestore.instance
         .collection("users")
-        .where('name', isEqualTo: searchField)
+        .where('name', isEqualTo: name)
         .getDocuments();
   }
 
