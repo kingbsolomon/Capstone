@@ -71,7 +71,7 @@ class _SignInState extends State<SignIn> {
 
       if(user != null){
         QuerySnapshot userInfoSnapshot =
-        await DatabaseMethods().getUserInfo(user.email);
+        await DatabaseMethods().getUserInfo(emailEditingController.text);
 
         HelperFunctions.saveUserLoggedInSharedPreference(true);
         HelperFunctions.saveUserNameSharedPreference(
@@ -80,11 +80,10 @@ class _SignInState extends State<SignIn> {
             userInfoSnapshot.documents[0].data["email"]);
 
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => ChatRoom()));
+            context, MaterialPageRoute(builder: (context) => UserFeed()));
       } else {
         setState(() {
           isLoading = false;
-          //show snackbar
         });
       }
 

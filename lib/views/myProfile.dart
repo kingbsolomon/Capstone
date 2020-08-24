@@ -1,11 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:login_test/helper/constants.dart';
 import 'package:login_test/helper/helperFunctions.dart';
 import 'package:login_test/services/database.dart';
 import 'package:login_test/services/sideMenu.dart';
 import 'package:login_test/widgets/widget.dart';
+import 'dart:io';
+import 'package:path/path.dart';
+
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -30,6 +35,8 @@ class MapScreenState extends State<ProfilePage>
   String zipText;
   String stateText;
   String documentID;
+  File _image;
+  final picker = ImagePicker();
 
   initiateSearch() async {
     Constants.myEmail = await HelperFunctions.getUserEmailSharedPreference();
@@ -64,6 +71,23 @@ class MapScreenState extends State<ProfilePage>
       });
     }
 
+    Future getImage() async{
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    setState(() {
+      _image = File(pickedFile.path);
+
+    });
+    }
+
+    Future uploadPic(BuildContext context) async{
+      String fileName = basename(_image.path);
+      StorageReference firebaseStorageRef = FirebaseStorage.instance.ref().child(fileName);
+      StorageUploadTask uploadTask = firebaseStorageRef.putFile(_image);
+      StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+      setState(() {
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Profile Picture Uploaded')));
+      });
+    }
 
 
 
@@ -109,10 +133,12 @@ class MapScreenState extends State<ProfilePage>
                                       shape: BoxShape.circle,
                                       image:  DecorationImage(
                                         image:  ExactAssetImage(
-                                            'assets/giphy.gif'),
+                                            'assets/search_white.png'),
                                         fit: BoxFit.cover,
                                       ),
-                                    )),
+                                    ),
+                                   child: (_image!=null)?Image.file(_image): Image.asset('assets/giphy.gif'),
+                                 ),
                               ],
                             ),
                             Padding(
@@ -123,11 +149,16 @@ class MapScreenState extends State<ProfilePage>
                                      CircleAvatar(
                                       backgroundColor: Colors.red,
                                       radius: 25.0,
-                                      child:  Icon(
-                                        Icons.camera_alt,
-                                        color: Colors.white,
+                                      child:  IconButton(
+                                        icon: Icon(
+                                          Icons.camera_alt,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: (){
+                                          getImage();
+                                        },
                                       ),
-                                    )
+                                    ),
                                   ],
                                 )),
                           ]),
@@ -383,7 +414,8 @@ class MapScreenState extends State<ProfilePage>
                       setState(() {
                         _status = true;
                         updateRecord();
-                        FocusScope.of(context).requestFocus( FocusNode());
+                        //uploadPic(context);
+                        //FocusScope.of(context).requestFocus( FocusNode());
                       });
                     },
                     shape:  RoundedRectangleBorder(
@@ -403,7 +435,7 @@ class MapScreenState extends State<ProfilePage>
                     onPressed: () {
                       setState(() {
                         _status = true;
-                        FocusScope.of(context).requestFocus( FocusNode());
+                        //FocusScope.of(context).requestFocus( FocusNode());
                       });
                     },
                     shape:  RoundedRectangleBorder(

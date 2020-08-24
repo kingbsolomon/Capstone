@@ -9,7 +9,6 @@ import 'package:login_test/model/vote.dart';
 import 'package:login_test/services/database.dart';
 import 'package:login_test/services/services.dart';
 import 'package:login_test/services/sideMenu.dart';
-import 'package:login_test/views/results.dart';
 import 'package:login_test/widgets/widget.dart';
 import 'package:provider/provider.dart';
 
@@ -39,17 +38,16 @@ class _MyResultsState extends State<MyResults> {
 
   QuerySnapshot searchResultSnapshot;
   DatabaseMethods databaseMethods = DatabaseMethods();
-  int totalVotes;
-  List<int> voteList;
 
-  Future getDocs() async {
-    QuerySnapshot querySnapshot = await Firestore.instance.collection("votes").getDocuments();
-    for (int i = 0; i < querySnapshot.documents.length; i++) {
-       querySnapshot.documents[i].data.
 
-      }
+    getChats() async{
+      return Firestore.instance
+          .collection("votes")
+          .document("totalVotes")
+          .snapshots();
     }
 
+    @override
 
 
   Material myTextItems(String title, String subtitle){
@@ -263,6 +261,8 @@ class _MyResultsState extends State<MyResults> {
 
   @override
   Widget build(BuildContext context) {
+    int totalVotes = 47;
+    double totalRevenue = totalVotes * 0.25;
     return Scaffold(
       drawer: NavDrawer(),
       appBar: appBarMain(context),
@@ -282,7 +282,7 @@ class _MyResultsState extends State<MyResults> {
             ),
             Padding(
               padding: const EdgeInsets.only(right:8.0),
-              child: myTextItems("Total Revenue","\$17.24"),
+              child: myTextItems("Total Revenue","\$$totalRevenue"),
             ),
             Padding(
               padding: const EdgeInsets.only(right:8.0),
@@ -305,10 +305,4 @@ class _MyResultsState extends State<MyResults> {
       ),
     );
   }
-}
-class VoteData {
-  final String option;
-  final int total;
-
-  VoteData(this.option, this.total);
 }

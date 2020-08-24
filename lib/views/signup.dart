@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:login_test/helper/helperFunctions.dart';
 import 'package:login_test/helper/theme.dart';
 import 'package:login_test/services/database.dart';
+import 'package:login_test/views/feed.dart';
 import 'package:login_test/widgets/widget.dart';
 import 'package:login_test/services/auth.dart';
 import 'package:login_test/views/chatRoomsScreen.dart';
@@ -50,7 +51,7 @@ class _SignUpState extends State<SignUp> {
 
 
           Navigator.pushReplacement(context, MaterialPageRoute(
-              builder: (context) => ChatRoom()
+              builder: (context) => UserFeed()
           ));
         }
       }
